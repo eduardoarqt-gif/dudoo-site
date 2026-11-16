@@ -1339,7 +1339,7 @@
       } else {
         var corpo = ['Produto de interesse: Dudoo Lite', 'Nome: ' + p.nome, 'Empresa: ' + p.empresa, 'Segmento: ' + p.segmento,
                      'E-mail: ' + p.email, 'WhatsApp: ' + p.whatsapp, 'Mensagem: ' + (p.mensagem || '(nao informado)')].join('\n');
-        window.location.href = 'mailto:eduardoarqt@gmail.com?subject=' + encodeURIComponent('Interesse em Dudoo Lite - ' + (p.empresa || p.nome)) + '&body=' + encodeURIComponent(corpo);
+        window.__dudooLead(p);
       }
       var ok = form.querySelector('.lead-ok');
       if (ok) { ok.style.display = 'block'; }

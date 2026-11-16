@@ -1230,7 +1230,7 @@
       } else {
         var linhas = ['Produto de interesse: Dudoo Trips', 'Nome: ' + lead.nome, 'E-mail: ' + lead.email, 'WhatsApp: ' + lead.whatsapp,
           'Como viaja: ' + (lead.segmento || '(nao informado)'), 'Mensagem: ' + (lead.mensagem || '(nao informado)')];
-        window.location.href = 'mailto:eduardoarqt@gmail.com?subject=' + encodeURIComponent('Interesse em Dudoo Trips - ' + lead.nome) + '&body=' + encodeURIComponent(linhas.join('\n'));
+        window.__dudooLead(lead);
       }
       var ok = document.getElementById('trips-ok');
       if (ok) { ok.style.display = 'block'; }
