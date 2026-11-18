@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<link rel="canonical" href="https://dudoo.app.br/baixar/"><script data-goatcounter="https://dudoo.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+<title>Baixar o Dudoo Lite</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700&family=Sora:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#F7F4EC; --surface:#FFFFFF; --border:#DCD3B9; --text:#201F1D; --text2:#67635A; --accent:#7E6A3F; --accent-hover:#6A5A35; --accent-ink:#FAF7EE; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#141412; --surface:#201F1D; --border:#3A3935; --text:#FAFAF8; --text2:#A9A7A1; --accent:#B59B62; --accent-hover:#C7AE76; --accent-ink:#141412; } }
+  * { box-sizing:border-box; }
+  body { margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center; background:var(--bg); color:var(--text); font-family:"Sora","Segoe UI",sans-serif; padding:24px; }
+  main { width:100%; max-width:560px; }
+  h1 { font-family:"Jost","Century Gothic",sans-serif; font-weight:600; font-size:30px; margin:0 0 6px; }
+  p { color:var(--text2); line-height:1.55; margin:0 0 16px; }
+  .cartao { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; margin:0 0 12px; }
+  .cartao strong { display:block; margin-bottom:4px; }
+  .cartao small { display:block; color:var(--text2); margin-bottom:12px; line-height:1.45; }
+  a.botao { display:inline-block; background:var(--accent); color:var(--accent-ink); text-decoration:none; font-weight:600; padding:11px 20px; border-radius:8px; }
+  a.botao:hover { background:var(--accent-hover); }
+  .dica { font-size:13px; }
+  [hidden] { display:none !important; }
+</style></head>
+<body><main>
+  <h1>Baixar o Dudoo Lite</h1>
+
+  <section id="windows" hidden>
+    <p>O download começa sozinho. Se não começar, use o botão.</p>
+    <div class="cartao"><strong>Windows</strong><small>Instalador do Dudoo Lite.</small><a class="botao" id="baixar-windows" href="https://github.com/eduardoarqt-gif/Dudoo-Lite-releases/releases/latest/download/Dudoo.Lite.exe">Baixar para Windows</a></div>
+    <p class="dica">Está em um Mac? <a href="#" id="ver-mac" style="color:var(--accent)">Ver as versões para Mac</a>.</p>
+  </section>
+
+  <section id="mac" hidden>
+    <p>Escolha a versão do seu Mac. Não sabe qual é? No menu Apple (a maçã, no canto da tela), abra <strong>Sobre este Mac</strong>: se aparecer "Chip Apple M1, M2, M3 ou M4", use a primeira; se aparecer "Intel", use a segunda.</p>
+    <div class="cartao"><strong>Mac com chip Apple (M1, M2, M3, M4)</strong><small>Os Macs mais novos, de 2020 em diante.</small><a class="botao" href="https://github.com/eduardoarqt-gif/Dudoo-Lite-releases/releases/latest/download/Dudoo-Lite-mac-arm64.zip">Baixar para Mac Apple</a></div>
+    <div class="cartao"><strong>Mac com processador Intel</strong><small>Os Macs mais antigos.</small><a class="botao" href="https://github.com/eduardoarqt-gif/Dudoo-Lite-releases/releases/latest/download/Dudoo-Lite-mac.zip">Baixar para Mac Intel</a></div>
+    <p class="dica">Depois de baixar: abra o arquivo .zip e arraste o Dudoo Lite para a pasta Aplicativos.</p>
+  </section>
+
+  <section id="outros" hidden>
+    <p>O Dudoo Lite é um programa para computador (Windows ou Mac). Abra esta página no seu computador para baixar.</p>
+  </section>
+
+<script>
+(function () {
+  var ua = navigator.userAgent || "";
+  var movel = /Android|iPhone|iPad|iPod/i.test(ua);
+  var mac = /Macintosh|Mac OS X/i.test(ua) && !movel;
+  var win = /Windows/i.test(ua);
+  function mostrar(id) { ["windows", "mac", "outros"].forEach(function (x) { document.getElementById(x).hidden = x !== id; }); }
+  document.getElementById("ver-mac").addEventListener("click", function (e) { e.preventDefault(); mostrar("mac"); });
+  if (win) { mostrar("windows"); setTimeout(function () { window.location.href = document.getElementById("baixar-windows").href; }, 600); }
+  else if (mac) { mostrar("mac"); }
+  else if (movel) { mostrar("outros"); }
+  else { mostrar("windows"); document.getElementById("mac").hidden = false; }   // Linux/desconhecido: mostra as duas opções, sem baixar sozinho
+})();
+</script>
+</main></body></html>
