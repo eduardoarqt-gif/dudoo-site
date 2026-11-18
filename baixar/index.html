@@ -24,17 +24,18 @@
 </style></head>
 <body><main>
   <h1>Baixar o Dudoo Lite</h1>
+  <p id="versao" hidden></p>
 
   <section id="windows" hidden>
     <p>O download começa sozinho. Se não começar, use o botão.</p>
-    <div class="cartao"><strong>Windows</strong><small>Instalador do Dudoo Lite.</small><a class="botao" id="baixar-windows" href="https://github.com/eduardoarqt-gif/Dudoo-Lite-releases/releases/latest/download/Dudoo.Lite.exe">Baixar para Windows</a></div>
+    <div class="cartao"><strong>Windows</strong><small>Instalador do Dudoo Lite.</small><a class="botao" id="baixar-windows" href="https://github.com/eduardoarqt-gif/Dudoo-Lite-releases/releases/latest">Baixar para Windows</a></div>
     <p class="dica">Está em um Mac? <a href="#" id="ver-mac" style="color:var(--accent)">Ver as versões para Mac</a>.</p>
   </section>
 
   <section id="mac" hidden>
     <p>Escolha a versão do seu Mac. Não sabe qual é? No menu Apple (a maçã, no canto da tela), abra <strong>Sobre este Mac</strong>: se aparecer "Chip Apple M1, M2, M3 ou M4", use a primeira; se aparecer "Intel", use a segunda.</p>
-    <div class="cartao"><strong>Mac com chip Apple (M1, M2, M3, M4)</strong><small>Os Macs mais novos, de 2020 em diante.</small><a class="botao" href="https://github.com/eduardoarqt-gif/Dudoo-Lite-releases/releases/latest/download/Dudoo-Lite-mac-arm64.zip">Baixar para Mac Apple</a></div>
-    <div class="cartao"><strong>Mac com processador Intel</strong><small>Os Macs mais antigos.</small><a class="botao" href="https://github.com/eduardoarqt-gif/Dudoo-Lite-releases/releases/latest/download/Dudoo-Lite-mac.zip">Baixar para Mac Intel</a></div>
+    <div class="cartao"><strong>Mac com chip Apple (M1, M2, M3, M4)</strong><small>Os Macs mais novos, de 2020 em diante.</small><a class="botao" id="baixar-mac-apple" href="https://github.com/eduardoarqt-gif/Dudoo-Lite-releases/releases/latest">Baixar para Mac Apple</a></div>
+    <div class="cartao"><strong>Mac com processador Intel</strong><small>Os Macs mais antigos.</small><a class="botao" id="baixar-mac-intel" href="https://github.com/eduardoarqt-gif/Dudoo-Lite-releases/releases/latest">Baixar para Mac Intel</a></div>
     <p class="dica">Depois de baixar: abra o arquivo .zip e arraste o Dudoo Lite para a pasta Aplicativos.</p>
   </section>
 
@@ -50,10 +51,28 @@
   var win = /Windows/i.test(ua);
   function mostrar(id) { ["windows", "mac", "outros"].forEach(function (x) { document.getElementById(x).hidden = x !== id; }); }
   document.getElementById("ver-mac").addEventListener("click", function (e) { e.preventDefault(); mostrar("mac"); });
-  if (win) { mostrar("windows"); setTimeout(function () { window.location.href = document.getElementById("baixar-windows").href; }, 600); }
+  // Os arquivos da versão mais recente: o nome leva a versão (Dudoo-Lite-Instalador-v3.36.0.exe, ...-Mac-Apple.zip, ...-Mac-Intel.zip); releases antigas usavam outros nomes.
+  function achar(assets, teste) { for (var i = 0; i < assets.length; i++) { if (teste(String(assets[i].name || "").toLowerCase())) return assets[i].browser_download_url; } return ""; }
+  function ehApple(n) { return /\.zip$/.test(n) && (n.indexOf("-mac-apple") >= 0 || n.indexOf("-mac-arm64") >= 0); }
+  function ehIntel(n) { return /\.zip$/.test(n) && !ehApple(n) && (n.indexOf("-mac-intel") >= 0 || n === "dudoo-lite-mac.zip" || n === "duda-lite-mac.zip"); }
+  function ehWindows(n) { return /\.exe$/.test(n); }
+  function pronto(assets, versao) {
+    var exe = achar(assets, ehWindows);
+    if (exe) document.getElementById("baixar-windows").href = exe;
+    var apple = achar(assets, ehApple), intel = achar(assets, ehIntel);
+    if (apple) document.getElementById("baixar-mac-apple").href = apple;
+    if (intel) document.getElementById("baixar-mac-intel").href = intel;
+    if (versao) { var v = document.getElementById("versao"); v.textContent = "Versão " + String(versao).replace(/^v/i, ""); v.hidden = false; }
+    if (win && exe) { setTimeout(function () { window.location.href = exe; }, 600); }      // Windows: o download começa sozinho
+  }
+  if (win) { mostrar("windows"); }
   else if (mac) { mostrar("mac"); }
   else if (movel) { mostrar("outros"); }
   else { mostrar("windows"); document.getElementById("mac").hidden = false; }   // Linux/desconhecido: mostra as duas opções, sem baixar sozinho
+  fetch("https://api.github.com/repos/eduardoarqt-gif/Dudoo-Lite-releases/releases/latest", { headers: { "Accept": "application/vnd.github+json" } })
+    .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
+    .then(function (d) { pronto(d.assets || [], d.tag_name || ""); })
+    .catch(function () { /* sem a API: os botões levam à página da versão mais recente, de onde se escolhe o arquivo */ });
 })();
 </script>
 </main></body></html>
