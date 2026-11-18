@@ -36,6 +36,7 @@
     <p>Escolha a versão do seu Mac. Não sabe qual é? No menu Apple (a maçã, no canto da tela), abra <strong>Sobre este Mac</strong>: se aparecer "Chip Apple M1, M2, M3 ou M4", use a primeira; se aparecer "Intel", use a segunda.</p>
     <div class="cartao"><strong>Mac com chip Apple (M1, M2, M3, M4)</strong><small>Os Macs mais novos, de 2020 em diante.</small><a class="botao" id="baixar-mac-apple" href="https://github.com/eduardoarqt-gif/Dudoo-Lite-releases/releases/latest">Baixar para Mac Apple</a></div>
     <div class="cartao"><strong>Mac com processador Intel</strong><small>Os Macs mais antigos.</small><a class="botao" id="baixar-mac-intel" href="https://github.com/eduardoarqt-gif/Dudoo-Lite-releases/releases/latest">Baixar para Mac Intel</a></div>
+    <p class="dica" id="aviso-mac" hidden></p>
     <p class="dica">Depois de baixar: abra o arquivo .zip e arraste o Dudoo Lite para a pasta Aplicativos.</p>
   </section>
 
@@ -56,22 +57,38 @@
   function ehApple(n) { return /\.zip$/.test(n) && (n.indexOf("-mac-apple") >= 0 || n.indexOf("-mac-arm64") >= 0); }
   function ehIntel(n) { return /\.zip$/.test(n) && !ehApple(n) && (n.indexOf("-mac-intel") >= 0 || n === "dudoo-lite-mac.zip" || n === "duda-lite-mac.zip"); }
   function ehWindows(n) { return /\.exe$/.test(n); }
-  function pronto(assets, versao) {
-    var exe = achar(assets, ehWindows);
+  function limpa(v) { return String(v || "").replace(/^v/i, ""); }
+  // `releases` vem da mais nova para a mais antiga. Windows usa a mais nova; cada Mac usa a mais nova QUE TENHA o arquivo dele (o build do Mac sai depois do de Windows):
+  // assim o botão nunca cai na página de uma versão que só tem o .exe.
+  function pronto(releases) {
+    var nova = releases[0] || {}, v = document.getElementById("versao");
+    var exe = achar(nova.assets || [], ehWindows);
     if (exe) document.getElementById("baixar-windows").href = exe;
-    var apple = achar(assets, ehApple), intel = achar(assets, ehIntel);
-    if (apple) document.getElementById("baixar-mac-apple").href = apple;
-    if (intel) document.getElementById("baixar-mac-intel").href = intel;
-    if (versao) { var v = document.getElementById("versao"); v.textContent = "Versão " + String(versao).replace(/^v/i, ""); v.hidden = false; }
+    if (nova.tag_name) { v.textContent = "Versão " + limpa(nova.tag_name); v.hidden = false; }
+    var avisos = [];
+    [["baixar-mac-apple", ehApple, "Apple"], ["baixar-mac-intel", ehIntel, "Intel"]].forEach(function (m) {
+      for (var i = 0; i < releases.length; i++) {
+        var url = achar(releases[i].assets || [], m[1]);
+        if (!url) continue;
+        document.getElementById(m[0]).href = url;
+        if (i > 0) avisos.push("Mac " + m[2] + ": versão " + limpa(releases[i].tag_name));
+        return;
+      }
+    });
+    if (avisos.length && nova.tag_name) {
+      var a = document.getElementById("aviso-mac");
+      a.textContent = "A versão " + limpa(nova.tag_name) + " para Mac ainda está sendo preparada. Por enquanto estes botões baixam a última versão pronta (" + avisos.join("; ") + "); o Dudoo Lite avisa quando houver uma mais nova.";
+      a.hidden = false;
+    }
     if (win && exe) { setTimeout(function () { window.location.href = exe; }, 600); }      // Windows: o download começa sozinho
   }
   if (win) { mostrar("windows"); }
   else if (mac) { mostrar("mac"); }
   else if (movel) { mostrar("outros"); }
   else { mostrar("windows"); document.getElementById("mac").hidden = false; }   // Linux/desconhecido: mostra as duas opções, sem baixar sozinho
-  fetch("https://api.github.com/repos/eduardoarqt-gif/Dudoo-Lite-releases/releases/latest", { headers: { "Accept": "application/vnd.github+json" } })
+  fetch("https://api.github.com/repos/eduardoarqt-gif/Dudoo-Lite-releases/releases?per_page=30", { headers: { "Accept": "application/vnd.github+json" } })
     .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
-    .then(function (d) { pronto(d.assets || [], d.tag_name || ""); })
+    .then(function (lista) { pronto((lista || []).filter(function (r) { return !r.draft && !r.prerelease; })); })
     .catch(function () { /* sem a API: os botões levam à página da versão mais recente, de onde se escolhe o arquivo */ });
 })();
 </script>
