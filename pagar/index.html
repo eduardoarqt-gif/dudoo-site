@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<link rel="canonical" href="https://dudoo.app.br/pagar/"><script data-goatcounter="https://dudoo.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+<title>Pagar a licença · Dudoo Lite</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700&family=Sora:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#F7F4EC; --surface:#FFFFFF; --border:#DCD3B9; --text:#201F1D; --text2:#67635A; --accent:#7E6A3F; --accent-hover:#6A5A35; --accent-ink:#FAF7EE; --erro:#A33A2A; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#141412; --surface:#201F1D; --border:#3A3935; --text:#FAFAF8; --text2:#A9A7A1; --accent:#B59B62; --accent-hover:#C7AE76; --accent-ink:#141412; --erro:#E58B7A; } }
+  * { box-sizing:border-box; }
+  body { margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center; background:var(--bg); color:var(--text); font-family:"Sora","Segoe UI",sans-serif; padding:24px; }
+  main { width:100%; max-width:560px; }
+  h1 { font-family:"Jost","Century Gothic",sans-serif; font-weight:600; font-size:30px; margin:0 0 6px; }
+  p { color:var(--text2); line-height:1.55; margin:0 0 16px; }
+  label { display:block; font-size:14px; color:var(--text2); margin:0 0 6px; }
+  input { width:100%; padding:11px 12px; border:1px solid var(--border); border-radius:8px; background:var(--surface); color:var(--text); font:inherit; margin:0 0 12px; }
+  .opcao { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:16px 20px; margin:0 0 12px; }
+  .opcao strong { display:block; margin-bottom:2px; }
+  .opcao small { display:block; color:var(--text2); margin-bottom:12px; line-height:1.45; }
+  .opcao.destaque { border-color:var(--accent); }
+  button, a.botao { display:inline-block; background:var(--accent); color:var(--accent-ink); text-decoration:none; font:inherit; font-weight:600; padding:11px 20px; border:0; border-radius:8px; cursor:pointer; }
+  button:hover, a.botao:hover { background:var(--accent-hover); }
+  button:disabled { opacity:.6; cursor:wait; }
+  .erro { color:var(--erro); min-height:20px; margin:0 0 12px; }
+  .selo { font-size:12px; color:var(--text2); }
+  [hidden] { display:none !important; }
+</style></head>
+<body><main>
+  <h1>Pagar a licença</h1>
+  <p id="intro">Confirme o e-mail do administrador da licença para ver as formas de pagamento.</p>
+
+  <form id="acesso">
+    <label for="codigo">Código da licença</label>
+    <input id="codigo" autocomplete="off" spellcheck="false" placeholder="DUDOO-2026-...">
+    <label for="email">E-mail do administrador</label>
+    <input id="email" type="email" autocomplete="email" placeholder="voce@exemplo.com.br">
+    <button type="submit" id="entrar">Ver formas de pagamento</button>
+  </form>
+  <p class="erro" id="erro" role="alert"></p>
+
+  <section id="opcoes" hidden>
+    <div class="opcao">
+      <strong>Pagar este mês</strong>
+      <small id="txt-mes">Pagamento avulso (PIX, boleto ou cartão). Renova por 1 mês; no mês seguinte você paga de novo.</small>
+      <a class="botao" id="btn-mes" href="#" rel="noopener">Pagar este mês</a>
+    </div>
+    <div class="opcao">
+      <strong>Mensal no cartão</strong>
+      <small id="txt-mensal">O cartão é cobrado automaticamente todo mês. Você pode cancelar quando quiser, dentro do app.</small>
+      <button type="button" id="btn-mensal">Assinar mensal no cartão</button>
+    </div>
+    <div class="opcao destaque">
+      <strong>Anual no cartão <span id="selo-desconto"></span></strong>
+      <small id="txt-anual">Uma cobrança por ano, com desconto. A licença vale por 12 meses.</small>
+      <button type="button" id="btn-anual">Assinar anual no cartão</button>
+    </div>
+    <p class="selo">O cartão é digitado na página segura do Asaas: o Dudoo nunca vê nem guarda os dados do cartão.</p>
+  </section>
+</main>
+<script>
+(function () {
+  var API = "https://www.eduardoschmidt.arq.br/_functions/duda_lite_pagar";
+  var $ = function (id) { return document.getElementById(id); };
+  var reais = function (n) { return "R$ " + Number(n).toFixed(2).replace(".", ","); };
+  var params = new URLSearchParams(location.search);
+  if (params.get("c")) $("codigo").value = params.get("c").trim();
+  function falhar(msg) { $("erro").textContent = msg || "Não foi possível agora. Tente de novo em instantes."; }
+  function chamar(acao) {
+    return fetch(API, { method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ codigo: $("codigo").value.trim(), email: $("email").value.trim(), acao: acao }) })
+      .then(function (r) { return r.json().catch(function () { return { ok: false }; }); });
+  }
+  $("acesso").addEventListener("submit", function (e) {
+    e.preventDefault(); $("erro").textContent = ""; $("entrar").disabled = true;
+    chamar("consultar").then(function (d) {
+      $("entrar").disabled = false;
+      if (!d.ok) return falhar(d.erro);
+      $("acesso").hidden = true; $("opcoes").hidden = false;
+      $("intro").textContent = (d.cliente ? d.cliente + " — " : "") + "escolha como prefere pagar.";
+      $("txt-mensal").textContent = "Cobrança automática de " + reais(d.mensal) + " por mês no cartão. Cancele quando quiser, dentro do app.";
+      $("txt-anual").textContent = "Uma cobrança de " + reais(d.anual) + " por ano (equivale a " + reais(d.anual / 12) + " por mês). A licença vale por 12 meses.";
+      $("selo-desconto").textContent = "· " + d.desconto + "% de desconto";
+      if (d.link_mes) { $("btn-mes").href = d.link_mes; } else { $("btn-mes").hidden = true; $("txt-mes").textContent = "Não há cobrança em aberto agora. Use uma das opções no cartão ou fale com a gente."; }
+    }).catch(function () { $("entrar").disabled = false; falhar(); });
+  });
+  function cartao(acao, botao) {
+    $("erro").textContent = ""; botao.disabled = true;
+    chamar(acao).then(function (d) {
+      if (d.ok && d.link) { location.href = d.link; return; }
+      botao.disabled = false; falhar(d.erro);
+    }).catch(function () { botao.disabled = false; falhar(); });
+  }
+  $("btn-mensal").addEventListener("click", function () { cartao("cartao_mensal", this); });
+  $("btn-anual").addEventListener("click", function () { cartao("cartao_anual", this); });
+})();
+</script></body></html>
