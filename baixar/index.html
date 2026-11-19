@@ -44,6 +44,8 @@
   .opcao.destaque { border-color:var(--accent); }
   .selo { position:absolute; top:-11px; left:20px; font-family:var(--font-mono); font-size:10.5px; letter-spacing:0.12em; text-transform:uppercase; background:var(--accent); color:var(--accent-ink); padding:3px 10px; border-radius:3px; }
   .selo[hidden] { display:none; }
+  .arquivo { font-family:var(--font-mono); font-size:11px; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-tertiary); margin:0 0 10px; }
+  .arquivo[hidden] { display:none; }
   .icone { width:38px; height:38px; color:var(--accent); margin-bottom:14px; }
   .opcao h3 { font-size:22px; font-weight:600; }
   .opcao p { color:var(--text-secondary); font-size:14px; margin:6px 0 20px; flex:1; }
@@ -88,6 +90,7 @@
       <svg class="icone" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 5.5l7.5-1v7H3zM11.5 4.4L21 3v8.5h-9.5zM3 12.5h7.5v7L3 18.5zM11.5 12.5H21V21l-9.5-1.3z"/></svg>
       <h3>Windows</h3>
       <p>Para computadores com Windows 10 ou 11. Baixa o instalador, que já cria o atalho na área de trabalho.</p>
+      <p class="arquivo" id="versao-windows" hidden></p>
       <a class="btn" id="baixar-windows" href="https://github.com/eduardoarqt-gif/Dudoo-Lite-releases/releases/latest" title="Baixa o instalador do Dudoo Lite para Windows">Baixar para Windows</a>
     </div>
     <div class="opcao" id="cartao-mac-apple">
@@ -95,6 +98,7 @@
       <svg class="icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M8 20h8M12 16v4"/></svg>
       <h3>Mac com chip Apple</h3>
       <p>M1, M2, M3 ou M4: os Macs mais novos, de 2020 em diante.</p>
+      <p class="arquivo" id="versao-mac-apple" hidden></p>
       <a class="btn" id="baixar-mac-apple" href="https://github.com/eduardoarqt-gif/Dudoo-Lite-releases/releases/latest" title="Baixa o Dudoo Lite para Mac com chip Apple (M1, M2, M3 ou M4)">Baixar para Mac Apple</a>
     </div>
     <div class="opcao" id="cartao-mac-intel">
@@ -102,6 +106,7 @@
       <svg class="icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M8 20h8M12 16v4"/></svg>
       <h3>Mac com processador Intel</h3>
       <p>Os Macs mais antigos, anteriores a 2020.</p>
+      <p class="arquivo" id="versao-mac-intel" hidden></p>
       <a class="btn" id="baixar-mac-intel" href="https://github.com/eduardoarqt-gif/Dudoo-Lite-releases/releases/latest" title="Baixa o Dudoo Lite para Mac com processador Intel">Baixar para Mac Intel</a>
     </div>
   </div>
@@ -133,9 +138,35 @@
   var movel = /Android|iPhone|iPad|iPod/i.test(ua);
   var mac = /Macintosh|Mac OS X/i.test(ua) && !movel;
   var win = /Windows/i.test(ua);
-  // Mostra as três opções sempre, lado a lado, e só destaca a do computador de quem abriu (nada baixa sozinho). No Mac não dá para saber se é Apple ou Intel: destaca as duas.
-  function destacar(id) { var c = document.getElementById(id); c.classList.add("destaque"); c.querySelector(".selo").hidden = false; }
-  if (win) destacar("cartao-windows"); else if (mac) { destacar("cartao-mac-apple"); destacar("cartao-mac-intel"); }
+  // Mostra as três opções sempre, lado a lado, e destaca a do computador de quem abriu (nada baixa sozinho).
+  // Windows x Mac vem do "user agent". Apple x Intel NÃO vem dele (os Macs novos se dizem "Intel"): tenta o `architecture` do navegador (Chrome/Edge: "arm" = chip Apple) e, na falta,
+  // o nome da placa de vídeo (WebGL: "Apple M1..." = chip Apple; "Intel..."/"AMD..." = Intel). Se nenhum dos dois responder, destaca os dois Macs.
+  function destacar(id, texto) { var c = document.getElementById(id); c.classList.add("destaque"); var s = c.querySelector(".selo"); if (texto) s.textContent = texto; s.hidden = false; }
+  function chipPorGpu() {
+    try {
+      var c = document.createElement("canvas"), gl = c.getContext("webgl") || c.getContext("experimental-webgl");
+      if (!gl) return "";
+      var ext = gl.getExtension("WEBGL_debug_renderer_info"), r = String((ext && gl.getParameter(ext.UNMASKED_RENDERER_WEBGL)) || gl.getParameter(gl.RENDERER) || "");
+      if (/Apple (M\d|GPU)/i.test(r)) return "apple";
+      if (/Intel|AMD|Radeon|NVIDIA|GeForce/i.test(r)) return "intel";
+    } catch (e) {}
+    return "";
+  }
+  function detectarChip() {
+    if (navigator.userAgentData && navigator.userAgentData.getHighEntropyValues) {
+      return navigator.userAgentData.getHighEntropyValues(["architecture"]).then(function (v) {
+        var a = String(v.architecture || "").toLowerCase();
+        return a === "arm" ? "apple" : a === "x86" ? "intel" : chipPorGpu();
+      }).catch(chipPorGpu);
+    }
+    return Promise.resolve(chipPorGpu());
+  }
+  if (win) destacar("cartao-windows");
+  else if (mac) detectarChip().then(function (chip) {
+    if (chip === "apple") destacar("cartao-mac-apple");
+    else if (chip === "intel") destacar("cartao-mac-intel");
+    else { destacar("cartao-mac-apple", "Talvez este"); destacar("cartao-mac-intel", "Talvez este"); }
+  });
   // Os arquivos da versão mais recente: o nome leva a versão (Dudoo-Lite-Instalador-v3.36.0.exe, ...-Mac-Apple.zip, ...-Mac-Intel.zip); releases antigas usavam outros nomes.
   function achar(assets, teste) { for (var i = 0; i < assets.length; i++) { if (teste(String(assets[i].name || "").toLowerCase())) return assets[i].browser_download_url; } return ""; }
   function ehApple(n) { return /\.zip$/.test(n) && (n.indexOf("-mac-apple") >= 0 || n.indexOf("-mac-arm64") >= 0); }
@@ -146,7 +177,8 @@
   function pronto(releases) {
     var nova = releases[0] || {}, v = document.getElementById("versao");
     var exe = achar(nova.assets || [], ehWindows);
-    if (exe) document.getElementById("baixar-windows").href = exe;
+    function marcarVersao(id, tag) { var el = document.getElementById(id); if (tag) { el.textContent = "Arquivo da versão " + limpa(tag); el.hidden = false; } }
+    if (exe) { document.getElementById("baixar-windows").href = exe; marcarVersao("versao-windows", nova.tag_name); }
     if (nova.tag_name) { v.textContent = "Versão " + limpa(nova.tag_name); v.hidden = false; }
     var avisos = [];
     [["baixar-mac-apple", ehApple, "Apple"], ["baixar-mac-intel", ehIntel, "Intel"]].forEach(function (m) {
@@ -154,6 +186,7 @@
         var url = achar(releases[i].assets || [], m[1]);
         if (!url) continue;
         document.getElementById(m[0]).href = url;
+        marcarVersao("versao-" + m[0].replace("baixar-", ""), releases[i].tag_name);
         if (i > 0) avisos.push("Mac " + m[2] + ": versão " + limpa(releases[i].tag_name));
         return;
       }
