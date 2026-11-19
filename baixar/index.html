@@ -147,7 +147,7 @@
       var c = document.createElement("canvas"), gl = c.getContext("webgl") || c.getContext("experimental-webgl");
       if (!gl) return "";
       var ext = gl.getExtension("WEBGL_debug_renderer_info"), r = String((ext && gl.getParameter(ext.UNMASKED_RENDERER_WEBGL)) || gl.getParameter(gl.RENDERER) || "");
-      if (/Apple (M\d|GPU)/i.test(r)) return "apple";
+      if (/Apple M\d/i.test(r)) return "apple";      // "Apple GPU" sozinho (Safari) não diz se é chip Apple ou Intel: fica sem resposta e destaca os dois
       if (/Intel|AMD|Radeon|NVIDIA|GeForce/i.test(r)) return "intel";
     } catch (e) {}
     return "";
