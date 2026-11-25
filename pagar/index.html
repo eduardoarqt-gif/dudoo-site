@@ -75,6 +75,7 @@
   .acesso input:focus { outline:2px solid var(--accent); outline-offset:1px; background:var(--surface); }
   button.btn { cursor:pointer; }
   button.btn:disabled { opacity:.6; cursor:wait; transform:none; }
+  .dica { font-size:12.5px; color:var(--text-tertiary); margin:-6px 0 16px; line-height:1.5; }
   .erro { color:var(--alert); font-size:13.5px; min-height:20px; margin:14px 0 0; }
   .nota { margin-top:22px; font-size:13px; color:var(--text-tertiary); max-width:720px; }
   [hidden] { display:none !important; }
@@ -89,15 +90,16 @@
 <header class="hero blueprint"><div class="wrap">
   <div class="eyebrow">Assinatura</div>
   <h1>Assinar o Dudoo Lite</h1>
-  <p class="slogan" id="intro">Renova sozinho, até você cancelar.</p>
+  <p class="slogan" id="intro">Liberdade pra escolher, mensal ou anual.</p>
 </div></header>
 
 <section id="passo-acesso"><div class="wrap">
-  <span class="tag">Confirme a sua licença</span>
+  <span class="tag">Antes de continuar, confirme sua licença:</span>
   <form class="acesso" id="acesso">
     <div id="bloco-codigo">
-      <label for="codigo">Código da licença <small>(está no e-mail de boas-vindas)</small></label>
+      <label for="codigo">Código da licença</label>
       <input id="codigo" autocomplete="off" spellcheck="false" placeholder="DUDOO-2026-...">
+      <p class="dica">Onde encontrar: no e-mail de boas-vindas (é o código que você digitou para ativar o Dudoo Lite) ou, com o app aberto, em Configurações, na seção Licença.</p>
     </div>
     <label for="email">E-mail do administrador <small>(o mesmo cadastrado no Dudoo Lite)</small></label>
     <input id="email" type="email" autocomplete="email" placeholder="voce@exemplo.com.br">
@@ -160,7 +162,6 @@
       $("entrar").disabled = false;
       if (!d.ok) return falhar(d.erro);
       $("passo-acesso").hidden = true; $("opcoes").hidden = false;
-      $("intro").textContent = (d.cliente ? d.cliente + ": " : "") + "renova sozinho, até você cancelar.";
       $("txt-mensal").textContent = "Cobrança automática de " + reais(d.mensal) + " por mês no cartão, sem você fazer nada. Cancele quando quiser, dentro do app.";
       $("txt-anual").textContent = "Uma cobrança de " + reais(d.anual) + " por ano (equivale a " + reais(d.anual / 12) + " por mês). Renova sozinha a cada 12 meses até você cancelar.";
       $("selo-desconto").textContent = d.desconto + "% de desconto";
