@@ -75,6 +75,7 @@
   .acesso input:focus { outline:2px solid var(--accent); outline-offset:1px; background:var(--surface); }
   button.btn { cursor:pointer; }
   button.btn:disabled { opacity:.6; cursor:wait; transform:none; }
+  .opcoes.dois { grid-template-columns:repeat(2, 1fr); }
   .dica { font-size:12.5px; color:var(--text-tertiary); margin:-6px 0 16px; line-height:1.5; }
   .erro { color:var(--alert); font-size:13.5px; min-height:20px; margin:14px 0 0; }
   .nota { margin-top:22px; font-size:13px; color:var(--text-tertiary); max-width:720px; }
@@ -110,7 +111,7 @@
 
 <section id="opcoes" hidden><div class="wrap">
   <span class="tag">Escolha o plano e a forma de pagamento</span>
-  <div class="opcoes">
+  <div class="opcoes dois">
     <div class="opcao">
       <svg class="icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="1.5"/><path d="M7 10h4M7 14h10"/></svg>
       <h3>Mensal no Pix ou boleto</h3>
@@ -129,6 +130,13 @@
       <h3>Anual no cartão</h3>
       <p id="txt-anual">Uma cobrança por ano, com desconto. Renova sozinha a cada 12 meses até você cancelar.</p>
       <button type="button" class="btn" id="btn-anual" title="Cadastra o cartão uma vez, na página segura do Asaas">Assinar anual no cartão</button>
+    </div>
+    <div class="opcao destaque">
+      <span class="selo" id="selo-desconto2">Desconto</span>
+      <svg class="icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="1.5"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+      <h3>Anual no Pix ou boleto</h3>
+      <p id="txt-anual-pix">Uma cobrança por ano, com desconto, enviada por e-mail para você pagar por Pix ou boleto. Renova a cada 12 meses até você cancelar.</p>
+      <button type="button" class="btn" id="btn-anual-pix" title="Abre a cobrança anual para pagar por Pix ou boleto">Assinar anual no Pix ou boleto</button>
     </div>
   </div>
   <p class="erro" id="erro2" role="alert"></p>
@@ -164,7 +172,8 @@
       $("passo-acesso").hidden = true; $("opcoes").hidden = false;
       $("txt-mensal").textContent = "Cobrança automática de " + reais(d.mensal) + " por mês no cartão, sem você fazer nada. Cancele quando quiser, dentro do app.";
       $("txt-anual").textContent = "Uma cobrança de " + reais(d.anual) + " por ano (equivale a " + reais(d.anual / 12) + " por mês). Renova sozinha a cada 12 meses até você cancelar.";
-      $("selo-desconto").textContent = d.desconto + "% de desconto";
+      $("selo-desconto").textContent = d.desconto + "% de desconto"; $("selo-desconto2").textContent = d.desconto + "% de desconto";
+      $("txt-anual-pix").textContent = "Uma cobrança de " + reais(d.anual) + " por ano, enviada por e-mail para você pagar por Pix ou boleto. Renova a cada 12 meses até você cancelar.";
       if (d.link_mes) { $("btn-mes").href = d.link_mes; } else { $("btn-mes").hidden = true; $("txt-mes").textContent = "Não há cobrança em aberto agora para pagar por Pix ou boleto. Use uma das opções no cartão ou fale com a gente."; }
     }).catch(function () { $("entrar").disabled = false; falhar(); });
   });
@@ -177,6 +186,7 @@
   }
   $("btn-mensal").addEventListener("click", function () { cartao("cartao_mensal", this); });
   $("btn-anual").addEventListener("click", function () { cartao("cartao_anual", this); });
+  $("btn-anual-pix").addEventListener("click", function () { cartao("pix_boleto_anual", this); });
 })();
 </script>
 </body></html>
