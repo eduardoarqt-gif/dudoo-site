@@ -57,6 +57,8 @@
   .passos { display:grid; grid-template-columns:repeat(3, 1fr); gap:18px; counter-reset:passo; }
   .passo { background:var(--surface-2); border:1px solid var(--border); border-radius:6px; padding:22px 22px 20px; }
   .passo::before { counter-increment:passo; content:"0" counter(passo); font-family:var(--font-mono); font-size:12px; letter-spacing:0.14em; color:var(--accent); }
+  .guia-passos svg { width:100%; height:auto; display:block; margin:10px 0 12px; }
+  .guia-passos .passo p { font-size:13px; }
   .passo h3 { font-size:19px; margin:8px 0 6px; }
   .passo p { margin:0; font-size:14px; color:var(--text-secondary); }
   footer { padding:44px 0 56px; border-top:1px solid var(--border); }
@@ -112,7 +114,79 @@
   </div>
   <p class="aviso" id="aviso-mac" hidden></p>
   <p class="ajuda"><strong>Não sabe qual Mac você tem?</strong> No menu Apple (a maçã, no canto da tela), abra <strong>Sobre este Mac</strong>: se aparecer "Chip Apple M1, M2, M3 ou M4", use o Mac com chip Apple; se aparecer "Intel", use o Mac com processador Intel.</p>
-  <p class="ajuda"><strong>Apareceu um aviso ao baixar ou abrir no Windows?</strong> É normal: o Dudoo Lite é um programa novo e ainda tem poucos downloads, então o navegador e o Windows pedem confirmação. No Edge ou no Chrome, clique nos três pontinhos ao lado do download e escolha <strong>Manter</strong>. Na janela que abrir ("Verifique se você confia..."), <strong>não clique em Excluir</strong>: clique na setinha ao lado do botão Excluir e escolha <strong>Manter mesmo assim</strong>. Se o Windows mostrar "O Windows protegeu seu computador", clique em <strong>Mais informações</strong> (o botão "Executar assim mesmo" só aparece depois desse clique) e depois em <strong>Executar assim mesmo</strong>.</p>
+  <div id="guia-aviso" style="margin-top:34px">
+    <span class="tag">Apareceu um aviso ao baixar ou abrir?</span>
+    <p class="ajuda" style="margin-top:10px">É normal: o Dudoo Lite é um programa novo e ainda tem poucos downloads, então o navegador e o Windows pedem a sua confirmação. Siga os 3 passos abaixo (os desenhos mostram onde clicar, o círculo vermelho marca o clique).</p>
+    <div class="passos guia-passos">
+
+      <div class="passo">
+        <h3>Manter o download</h3>
+        <svg viewBox="0 0 320 200" role="img" aria-label="Painel de downloads do Edge: clicar nos três pontinhos ao lado do download e escolher Manter" xmlns="http://www.w3.org/2000/svg">
+          <rect x="1" y="1" width="318" height="198" rx="8" fill="#fff" stroke="#DCD3B9"/>
+          <text x="16" y="28" font-size="13" font-weight="700" fill="#201F1D" font-family="Segoe UI,Arial,sans-serif">Downloads</text>
+          <rect x="12" y="40" width="296" height="74" rx="6" fill="#EFEAD9"/>
+          <path d="M26 56l7-3 7 3v6c0 5-3 8-7 10-4-2-7-5-7-10z" fill="none" stroke="#67635A" stroke-width="1.5"/>
+          <text x="48" y="58" font-size="10.5" fill="#201F1D" font-family="Segoe UI,Arial,sans-serif">Dudoo-Lite-Instalador.exe normalmente</text>
+          <text x="48" y="72" font-size="10.5" fill="#201F1D" font-family="Segoe UI,Arial,sans-serif">não é baixado. Verifique se você confia</text>
+          <text x="48" y="86" font-size="10.5" fill="#201F1D" font-family="Segoe UI,Arial,sans-serif">antes de abri-lo.</text>
+                    <text x="283" y="66" font-size="18" fill="#201F1D" font-family="Segoe UI,Arial,sans-serif" text-anchor="middle">&#8943;</text>
+          <circle cx="283" cy="60" r="15" fill="none" stroke="#C0392B" stroke-width="2.5"/>
+          <rect x="198" y="84" width="104" height="26" rx="5" fill="#fff" stroke="#DCD3B9"/>
+          <text x="250" y="101" font-size="11" fill="#201F1D" font-family="Segoe UI,Arial,sans-serif" text-anchor="middle" font-weight="700">Manter</text>
+          <rect x="199" y="85" width="102" height="24" rx="4" fill="none" stroke="#C0392B" stroke-width="2"/>
+          <text x="160" y="150" font-size="12" fill="#67635A" font-family="Segoe UI,Arial,sans-serif" text-anchor="middle">Clique nos três pontinhos</text>
+          <text x="160" y="168" font-size="12" fill="#67635A" font-family="Segoe UI,Arial,sans-serif" text-anchor="middle">e depois em "Manter".</text>
+        </svg>
+        <p>No Edge ou no Chrome, ao lado do download.</p>
+      </div>
+
+      <div class="passo">
+        <h3>Manter mesmo assim</h3>
+        <svg viewBox="0 0 320 200" role="img" aria-label="Janela Verifique se você confia: não clicar em Excluir, clicar na setinha ao lado e escolher Manter mesmo assim" xmlns="http://www.w3.org/2000/svg">
+          <rect x="1" y="1" width="318" height="198" rx="8" fill="#fff" stroke="#DCD3B9"/>
+          <text x="16" y="26" font-size="12" font-weight="700" fill="#201F1D" font-family="Segoe UI,Arial,sans-serif">Verifique se você confia</text>
+          <text x="16" y="41" font-size="12" font-weight="700" fill="#201F1D" font-family="Segoe UI,Arial,sans-serif">em Dudoo-Lite-Instalador.exe</text>
+          <text x="16" y="62" font-size="9.5" fill="#67635A" font-family="Segoe UI,Arial,sans-serif">O Microsoft Defender SmartScreen não pode verificar</text>
+          <text x="16" y="75" font-size="9.5" fill="#67635A" font-family="Segoe UI,Arial,sans-serif">se este arquivo é seguro, pois não é normalmente baixado.</text>
+          <text x="16" y="100" font-size="10.5" fill="#201F1D" font-family="Segoe UI,Arial,sans-serif">Cancelar</text>
+          <rect x="150" y="86" width="86" height="28" rx="4" fill="#0F6CBD"/>
+          <text x="180" y="104" font-size="11.5" fill="#fff" font-family="Segoe UI,Arial,sans-serif" text-anchor="middle">Excluir</text>
+          <rect x="236" y="86" width="26" height="28" rx="4" fill="#0F6CBD"/>
+          <path d="M243 98l6 6 6-6" fill="none" stroke="#fff" stroke-width="2"/>
+          <line x1="150" y1="84" x2="236" y2="116" stroke="#C0392B" stroke-width="2.5"/><line x1="236" y1="84" x2="150" y2="116" stroke="#C0392B" stroke-width="2.5"/>
+          <circle cx="249" cy="100" r="17" fill="none" stroke="#C0392B" stroke-width="2.5"/>
+          <rect x="168" y="120" width="140" height="26" rx="5" fill="#fff" stroke="#DCD3B9"/>
+          <rect x="169" y="121" width="138" height="24" rx="4" fill="none" stroke="#C0392B" stroke-width="2"/>
+          <text x="238" y="137" font-size="11" font-weight="700" fill="#201F1D" font-family="Segoe UI,Arial,sans-serif" text-anchor="middle">Manter mesmo assim</text>
+          <text x="160" y="170" font-size="12" fill="#67635A" font-family="Segoe UI,Arial,sans-serif" text-anchor="middle">NÃO clique em "Excluir": clique na</text>
+          <text x="160" y="187" font-size="12" fill="#67635A" font-family="Segoe UI,Arial,sans-serif" text-anchor="middle">setinha ao lado e em "Manter mesmo assim".</text>
+        </svg>
+        <p>O botão azul grande apaga o arquivo; a opção certa fica escondida na setinha.</p>
+      </div>
+
+      <div class="passo">
+        <h3>Executar assim mesmo</h3>
+        <svg viewBox="0 0 320 200" role="img" aria-label="Janela O Windows protegeu o computador: clicar em Mais informações e depois em Executar assim mesmo" xmlns="http://www.w3.org/2000/svg">
+          <rect x="1" y="1" width="318" height="198" rx="8" fill="#fff" stroke="#DCD3B9"/>
+          <rect x="14" y="12" width="292" height="124" rx="3" fill="#0F5FA8"/>
+          <text x="26" y="34" font-size="13" font-weight="700" fill="#fff" font-family="Segoe UI,Arial,sans-serif">O Windows protegeu o computador</text>
+          <text x="26" y="52" font-size="8.5" fill="#fff" font-family="Segoe UI,Arial,sans-serif">O Microsoft Defender SmartScreen impediu que um aplicativo</text>
+          <text x="26" y="63" font-size="8.5" fill="#fff" font-family="Segoe UI,Arial,sans-serif">não reconhecido fosse iniciado.</text>
+          <text x="26" y="80" font-size="9.5" fill="#fff" font-family="Segoe UI,Arial,sans-serif" text-decoration="underline">Mais informações</text>
+          <rect x="20" y="68" width="92" height="17" rx="4" fill="none" stroke="#FFD2CC" stroke-width="2.5"/>
+          <rect x="112" y="104" width="108" height="20" fill="#fff" fill-opacity=".92"/>
+          <text x="166" y="118" font-size="9" fill="#201F1D" font-family="Segoe UI,Arial,sans-serif" text-anchor="middle" font-weight="700">Executar assim mesmo</text>
+          <rect x="224" y="104" width="76" height="20" fill="#fff" fill-opacity=".92"/>
+          <text x="262" y="118" font-size="9" fill="#201F1D" font-family="Segoe UI,Arial,sans-serif" text-anchor="middle">Não executar</text>
+          <rect x="110" y="102" width="112" height="24" rx="3" fill="none" stroke="#FFD2CC" stroke-width="2.5"/>
+          <text x="160" y="156" font-size="12" fill="#67635A" font-family="Segoe UI,Arial,sans-serif" text-anchor="middle">Clique em "Mais informações": só então</text>
+          <text x="160" y="173" font-size="12" fill="#67635A" font-family="Segoe UI,Arial,sans-serif" text-anchor="middle">aparece "Executar assim mesmo".</text>
+        </svg>
+        <p>Aparece quando você abre o instalador baixado.</p>
+      </div>
+
+    </div>
+  </div>
 </div></section>
 
 <section style="padding-top:0"><div class="wrap">
