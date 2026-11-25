@@ -29,7 +29,7 @@
 </style></head>
 <body><main>
   <h1>Pagar a licença</h1>
-  <p id="intro">Para ver as formas de pagamento, confirme o <strong>e-mail do administrador</strong> da licença (o mesmo e-mail cadastrado como administrador no Dudoo Lite).</p>
+  <p id="intro">Para assinar, confirme o <strong>e-mail do administrador</strong> da licença (o mesmo e-mail cadastrado como administrador no Dudoo Lite). A assinatura renova sozinha, todo período, até você cancelar.</p>
 
   <form id="acesso">
     <div id="bloco-codigo">
@@ -38,24 +38,24 @@
     </div>
     <label for="email">E-mail do administrador</label>
     <input id="email" type="email" autocomplete="email" placeholder="voce@exemplo.com.br">
-    <button type="submit" id="entrar">Ver formas de pagamento</button>
+    <button type="submit" id="entrar">Continuar</button>
   </form>
   <p class="erro" id="erro" role="alert"></p>
 
   <section id="opcoes" hidden>
     <div class="opcao">
-      <strong>Pagar este mês</strong>
-      <small id="txt-mes">Pagamento avulso (PIX, boleto ou cartão). Renova por 1 mês; no mês seguinte você paga de novo.</small>
-      <a class="botao" id="btn-mes" href="#" rel="noopener">Pagar este mês</a>
+      <strong>Mensal no Pix ou boleto</strong>
+      <small id="txt-mes">Você paga esta cobrança e as próximas chegam por e-mail todo mês, no vencimento, até você cancelar.</small>
+      <a class="botao" id="btn-mes" href="#" rel="noopener">Assinar mensal no Pix ou boleto</a>
     </div>
     <div class="opcao">
       <strong>Mensal no cartão</strong>
-      <small id="txt-mensal">O cartão é cobrado automaticamente todo mês. Você pode cancelar quando quiser, dentro do app.</small>
+      <small id="txt-mensal">O cartão é cobrado automaticamente todo mês, sem você fazer nada. Cancele quando quiser, dentro do app.</small>
       <button type="button" id="btn-mensal">Assinar mensal no cartão</button>
     </div>
     <div class="opcao destaque">
       <strong>Anual no cartão <span id="selo-desconto"></span></strong>
-      <small id="txt-anual">Uma cobrança por ano, com desconto. A licença vale por 12 meses.</small>
+      <small id="txt-anual">Uma cobrança por ano, com desconto. Renova sozinha a cada 12 meses até você cancelar.</small>
       <button type="button" id="btn-anual">Assinar anual no cartão</button>
     </div>
     <p class="selo">O cartão é digitado na página segura do Asaas: o Dudoo nunca vê nem guarda os dados do cartão.</p>
@@ -80,11 +80,11 @@
       $("entrar").disabled = false;
       if (!d.ok) return falhar(d.erro);
       $("acesso").hidden = true; $("opcoes").hidden = false;
-      $("intro").textContent = (d.cliente ? d.cliente + " — " : "") + "escolha como prefere pagar.";
-      $("txt-mensal").textContent = "Cobrança automática de " + reais(d.mensal) + " por mês no cartão. Cancele quando quiser, dentro do app.";
-      $("txt-anual").textContent = "Uma cobrança de " + reais(d.anual) + " por ano (equivale a " + reais(d.anual / 12) + " por mês). A licença vale por 12 meses.";
+      $("intro").textContent = (d.cliente ? d.cliente + " — " : "") + "escolha o plano e a forma de pagamento. Todas as opções são assinaturas que renovam sozinhas; cancele quando quiser, dentro do app.";
+      $("txt-mensal").textContent = "Cobrança automática de " + reais(d.mensal) + " por mês no cartão, sem você fazer nada. Cancele quando quiser, dentro do app.";
+      $("txt-anual").textContent = "Uma cobrança de " + reais(d.anual) + " por ano (equivale a " + reais(d.anual / 12) + " por mês). Renova sozinha a cada 12 meses até você cancelar.";
       $("selo-desconto").textContent = "· " + d.desconto + "% de desconto";
-      if (d.link_mes) { $("btn-mes").href = d.link_mes; } else { $("btn-mes").hidden = true; $("txt-mes").textContent = "Não há cobrança em aberto agora. Use uma das opções no cartão ou fale com a gente."; }
+      if (d.link_mes) { $("btn-mes").href = d.link_mes; } else { $("btn-mes").hidden = true; $("txt-mes").textContent = "Não há cobrança em aberto agora para pagar por Pix ou boleto. Use uma das opções no cartão ou fale com a gente."; }
     }).catch(function () { $("entrar").disabled = false; falhar(); });
   });
   function cartao(acao, botao) {
